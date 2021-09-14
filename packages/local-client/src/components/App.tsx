@@ -1,10 +1,15 @@
-import TextEditor from './TextEditor';
+import { Provider } from 'react-redux';
+
+import { store } from '../state';
+import CellList from './CellList';
 
 const App = () => {
   return (
-    <div>
-      <TextEditor />
-    </div>
+    <Provider store={store}>
+      <div>
+        <CellList />
+      </div>
+    </Provider>
   );
 };
 
