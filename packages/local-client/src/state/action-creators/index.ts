@@ -1,6 +1,10 @@
+import { Dispatch } from 'redux';
+
+import bundler from '../../bundler';
 import { ActionType } from '../action-types';
 import { CellTypes } from '../cell';
 import {
+  Action,
   Direction,
   UpdateCellAction,
   MoveCellAction,
@@ -45,5 +49,29 @@ export const deleteCell = (id: string): DeleteCellAction => {
   return {
     type: ActionType.DELETE_CELL,
     payload: id,
+  };
+};
+
+export const createBundle = (id: string, input: string) => {
+  return async (dispatch: Dispatch<Action>) => {
+    dispatch({
+      type: ActionType.BUNDLE_START,
+      payload: {
+        id,
+      },
+    });
+
+    const result = await bundler(input);
+
+    dispatch({
+      type: ActionType.BUNDLE_COMPLETE,
+      payload: {
+        id,
+        bundle: {
+          code: result.bundledCode,
+          err: result.status,
+        },
+      },
+    });
   };
 };

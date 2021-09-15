@@ -29,7 +29,7 @@ const bundle = async (rawCode: string) => {
       bundledCode: data.text,
       status: '',
     };
-  } catch (error) {
+  } catch (error: any) {
     return {
       bundledCode: '',
       status: error.message,

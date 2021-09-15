@@ -1,1 +1,39 @@
-export const bundlesReducer = () => 1;
+import produce from 'immer';
+import { Action } from '../actions';
+import { ActionType } from '../action-types';
+
+interface BundlesState {
+  [key: string]:
+    | {
+        loading: boolean;
+        code: string;
+        error: string;
+      }
+    | undefined;
+}
+
+const initialState: BundlesState = {};
+const reducer = produce(
+  (state: BundlesState = initialState, action: Action): BundlesState => {
+    switch (action.type) {
+      case ActionType.BUNDLE_START:
+        state[action.payload.id] = {
+          loading: true,
+          code: '',
+          error: '',
+        };
+        return state;
+      case ActionType.BUNDLE_COMPLETE:
+        state[action.payload.id] = {
+          loading: false,
+          code: action.payload.bundle.code,
+          error: action.payload.bundle.err,
+        };
+        return state;
+      default:
+        return state;
+    }
+  }
+);
+
+export default reducer;

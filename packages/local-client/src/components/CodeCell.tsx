@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 
+import './styles/code-cell.css';
 import { Cell } from '../state';
 import { useActions } from '../hooks/useActions';
-import bundle from '../bundler';
+import { useTypedSelector } from '../hooks/useTypedSelector';
 import CodeEditor from './CodeEditor';
 import Preview from './Preview';
 import Resizable from './Resizable';
@@ -12,21 +13,40 @@ interface CodeCellProps {
 }
 
 const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
-  const { updateCell } = useActions();
-  const [code, setCode] = useState('');
-  const [error, setError] = useState('');
+  const { updateCell, createBundle } = useActions();
+
+  const bundle = useTypedSelector(({ bundles }) => bundles[cell.id]);
 
   useEffect(() => {
+    if (!bundle) {
+      createBundle(cell.id, cell.content);
+      return;
+    }
+
     const timer = setTimeout(async () => {
-      const { bundledCode, status } = await bundle(cell.content);
-      setCode(bundledCode);
-      setError(status);
-    }, 1000);
+      createBundle(cell.id, cell.content);
+    }, 750);
 
     return () => {
       clearTimeout(timer);
     };
-  }, [cell.content]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cell.content, cell.id, createBundle]);
+
+  const progressBar: JSX.Element = (
+    <div className='progress-cover'>
+      <progress className='progress is-small is-primary' max='100'>
+        Loading
+      </progress>
+    </div>
+  );
+
+  const preview: JSX.Element =
+    !bundle || bundle.loading ? (
+      progressBar
+    ) : (
+      <Preview code={bundle.code} bundlingStatus={bundle.error} />
+    );
 
   return (
     <Resizable direction='vertical'>
@@ -43,7 +63,7 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
             initialValue={cell.content}
           />
         </Resizable>
-        <Preview code={code} bundlingStatus={error} />
+        <div className='progress-wrapper'>{preview}</div>
       </div>
     </Resizable>
   );
