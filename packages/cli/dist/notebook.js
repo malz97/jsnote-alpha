@@ -1,0 +1,1 @@
+[{"id":"2c18l","content":"const app = 'hello';\nshow(app)\nconst cook = 'cook'","type":"code"}]
