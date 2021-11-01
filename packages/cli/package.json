@@ -20,10 +20,10 @@
     "@jsnote-alpha/local-client": "^1.0.0"
   },
   "devDependencies": {
-    "@types/node": "^16.9.2",
-    "esbuild": "0.8.26",
-    "typescript": "^4.4.3",
     "@jsnote-alpha/local-api": "^1.0.0",
-    "commander": "^8.2.0"
+    "@types/node": "^16.9.2",
+    "commander": "^8.2.0",
+    "esbuild": "0.8.26",
+    "typescript": "^4.4.3"
   }
 }
